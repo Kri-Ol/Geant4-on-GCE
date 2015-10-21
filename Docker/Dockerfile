@@ -1,32 +1,17 @@
 # Docker to run dose calc remotely
 FROM ubuntu:baseline
-MAINTAINER O.K. <oleg.krivosheev@xcision.com>
+MAINTAINER O.K. <https://github.com/Kri-Ol/Geant4-on-GCE>
 
-# commands and configuration
-RUN apt-get update && \
-    apt-get install -y python-numpy && \
-    apt-get install -y python-paramiko && \
-    apt-get install -y net-tools && \
-    apt-get install -y sshpass && \
-    apt-get install -y iputils-ping && \
-    apt-get install -y xz-utils && \
-    apt-get install -y wget && \
-    apt-get install -y wput && \
-    apt-get autoremove; apt-get clean; apt-get autoclean
-
-# make home dir
-RUN mkdir -p /home/beamuser
-
-# copy HEN_HOUSE & egsnrc
-
+# making run directory
 RUN mkdir -p /home/beamuser/run
 COPY run /home/beamuser/run
 
+# now copying G4 installation
 RUN mkdir -p /opt/Geant/
 COPY v4.10.01.p02 /opt/Geant/
 
 # python environment
-ENV PYTHONPATH /home/beamuser/runEGS/XcDefinitions:/home/beamuser/runEGS/XcMath:/home/beamuser/runEGS/XcMCCore:/home/beamuser/runEGS/XcIO
+ENV PYTHONPATH /home/beamuser/run/XcDefinitions:/home/beamuser/run/XcMath:/home/beamuser/run/XcMCCore:/home/beamuser/run/XcIO
 
 # GEANT environment
 ENV G4LEVELGAMMADATA /opt/Geant/v4.10.01.p02/share/Geant4-10.1.2/data/PhotonEvaporation3.1
@@ -44,5 +29,5 @@ ENV XZ_OPT=-9e
 
 # running the show
 
-WORKDIR /home/beamuser/
+WORKDIR /home/beamuser/run
 #CMD /home/beamuser/main

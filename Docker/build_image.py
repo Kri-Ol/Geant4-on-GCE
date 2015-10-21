@@ -81,6 +81,7 @@ def make_runtime(top, path_to_g4):
     """
 
     # get the source code
+    
     repo =  "https://github.com/Oleg-Krivosheev/G4DCM"
     rc = subprocess.call(["git", "clone", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     head, tail = os.path.split(repo)
@@ -104,8 +105,18 @@ def make_runtime(top, path_to_g4):
         rc = subprocess.call(["make"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if rc != 0:
             return False
+            
+    shutil.rmtree(tail)
 
-    return tail
+    return True
+    
+def get_repo(target_dir):
+    """
+    Get python scripts from repository into the target dir
+    """
+    rc = subprocess.call(["git", "clone", "https://github.com/Kri-Ol/Geant4-on-GCE", target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    return rc
 
 def main():
     """
@@ -125,9 +136,14 @@ def main():
     print(path_to_g4)
 
     # step 2 - build application
-    tail = make_runtime(top, path_to_g4)
+    rc = make_runtime(top, path_to_g4)
+    if rc != True:
+        raise RuntimeError("Unable to build run time")
     
-    shutil.rmtree("G4DCM")    
+    # step 3 - get code from repository
+    rc = get_repo("run")
+    if rc != 0:
+        raise RuntimeError("Unable to clone repo")        
 
     # step last - builddocker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:col",  "."], stderr=subprocess.PIPE)
