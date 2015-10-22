@@ -2,13 +2,19 @@
 FROM ubuntu:baseline
 MAINTAINER O.K. <https://github.com/Kri-Ol/Geant4-on-GCE>
 
+# install additional packages
+RUN apt-get install -y qt4-default && \
+    apt-get install -y mesa-utils && \
+    apt-get install -y libxerces-c3.1 && \
+    apt-get autoremove; apt-get clean; apt-get autoclean
+
 # making run directory
 RUN mkdir -p /home/beamuser/run
 COPY run /home/beamuser/run
 
 # now copying G4 installation
-RUN mkdir -p /opt/Geant/
-COPY v4.10.01.p02 /opt/Geant/
+RUN mkdir -p /opt/Geant/v4.10.01.p02
+COPY v4.10.01.p02 /opt/Geant/v4.10.01.p02
 
 # python environment
 ENV PYTHONPATH /home/beamuser/run/XcDefinitions:/home/beamuser/run/XcMath:/home/beamuser/run/XcMCCore:/home/beamuser/run/XcIO
@@ -30,4 +36,4 @@ ENV XZ_OPT=-9e
 # running the show
 
 WORKDIR /home/beamuser/run
-#CMD /home/beamuser/main
+CMD /home/beamuser/run/main.py

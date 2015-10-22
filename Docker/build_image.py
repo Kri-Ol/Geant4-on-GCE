@@ -75,7 +75,7 @@ def copy_GEANT4(top):
 
     return src
 
-def make_runtime(top, path_to_g4):
+def make_runtime(top, path_to_g4, target_dir):
     """
     Checkout the runtime code and build it 
     """
@@ -85,18 +85,14 @@ def make_runtime(top, path_to_g4):
     repo =  "https://github.com/Oleg-Krivosheev/G4DCM"
     rc = subprocess.call(["git", "clone", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     head, tail = os.path.split(repo)
-    print(tail)
 
     if rc != 0:
         return False
 
-    runplace = "run"    
-    rundir = os.path.join(top, runplace)
-    
-    if os.path.isdir(rundir):
-        shutil.rmtree(rundir)
+    rundir = os.path.join(top, target_dir)
+    if not os.path.isdir(rundir):
+        os.mkdir(target_dir)
 
-    os.mkdir(rundir)
     with temp_chdir(rundir):
         rc = subprocess.call(["cmake", "-DGeant4_DIR=" + path_to_g4,  os.path.join("..", tail)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if rc != 0:
@@ -114,6 +110,12 @@ def get_repo(target_dir):
     """
     Get python scripts from repository into the target dir
     """
+    
+    if os.path.isdir(target_dir):
+        shutil.rmtree(target_dir)
+        
+    os.mkdir(target_dir)
+    
     rc = subprocess.call(["git", "clone", "https://github.com/Kri-Ol/Geant4-on-GCE", target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     return rc
@@ -135,15 +137,15 @@ def main():
     path_to_g4 = copy_GEANT4(top)
     print(path_to_g4)
 
-    # step 2 - build application
-    rc = make_runtime(top, path_to_g4)
-    if rc != True:
-        raise RuntimeError("Unable to build run time")
-    
-    # step 3 - get code from repository
+    # step 2 - get code from repository
     rc = get_repo("run")
     if rc != 0:
-        raise RuntimeError("Unable to clone repo")        
+        raise RuntimeError("Unable to clone repo")
+        
+    # step 3 - build application
+    rc = make_runtime(top, path_to_g4, "run")
+    if rc != True:
+        raise RuntimeError("Unable to build run time")
 
     # step last - builddocker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:col",  "."], stderr=subprocess.PIPE)
