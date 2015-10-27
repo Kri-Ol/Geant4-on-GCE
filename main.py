@@ -2,11 +2,54 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 import subprocess
 import logging
 import json
+import paramiko
 
-def run(app, mac):
+def fix_mac(mac, nof_tracks):
+    """
+    Set number of tracks in macro to user-defined value
+
+    Parameters
+    ------------
+
+    mac: string
+        macro to pass to the application as first argument
+
+    nof_tracks: integer
+        number of tracks to set
+
+    returns: integer
+        return code
+    """
+    logging.info("Fixing the macro {0} {1}".format(mac, nof_tracks) )
+
+    if nof_tracks < 0:
+        return 0
+
+    b = -1
+    k = 0
+    lines = []
+    with open(mac, "rt") as f:
+        lines = f.readlines()
+        if "beamOn" in line:
+            b = k
+        k += 1
+
+    if b < 0:
+        return 0
+
+    s = lines[b].split(' ')
+    lines[b] = s[0] + " " + str(nof_tracks)
+
+    with open(mac, "wt") as f:
+        f.writelines(lines)
+
+    return 0
+
+def run(app, mac, nof_tracks):
     """
     Run application with macro as its first argument
 
@@ -19,10 +62,17 @@ def run(app, mac):
     mac: string
         macro to pass to the application as first argument
 
+    nof_tracks: integer
+        number of tracks to run
+
     returns: string
         file name of the stdout output
     """
-    logging.info("Running app {0} wih the macro {1}: {0} {1}".format(app, mac) )
+    logging.info("Running app {0} wih the macro {1}: {2}".format(app, mac, nof_tracks) )
+
+    rc = fix_mac(mac, nof_tracks)
+    if rc != 0:
+        return None
 
     p = subprocess.Popen([app, mac], stdin  = subprocess.PIPE,
                                      stdout = subprocess.PIPE,
@@ -50,9 +100,12 @@ def upload_sftp(tarname):
         file name of the stdout output
     """
 
+    rc = 0
+
     try:
         host = "75.148.23.250"
         port = 22
+
         transport = paramiko.Transport((host, port))
 
         password = "twobob2015@xc"
@@ -61,22 +114,23 @@ def upload_sftp(tarname):
 
         sftp = paramiko.SFTPClient.from_transport(transport)
 
-        dest_dir = "."
-        remote_dir = os.path.join("/home/sphinx/gcloud", dest_dir)
+        dest_dir   = "/home/sphinx/gcloud"
+        remote_dir = dest_dir # os.path.join("/home/sphinx/gcloud", dest_dir)
 
         try:
             sftp.chdir(remote_dir)  # test if remote_dir exists
         except IOError:
             sftp.mkdir(remote_dir)
-            sftp.chdir(remote_dir)
 
-            destination_path = os.path.join(remote_dir, aname)
-            sftp.put(aname, destination_path)
+        sftp.chdir(remote_dir)
 
-            sftp.close()
-            transport.close()
+        destination_path = os.path.join(remote_dir, tarname)
+        sftp.put(tarname, destination_path)
 
-            rc = 0
+        sftp.close()
+        transport.close()
+
+        rc = 0
 
     except OSError:
         logging.debug("upload_sftp: OS failure ")
@@ -98,10 +152,12 @@ def compress_data(tarname, *fnames):
     dst = tarname + ".tar.xz"
 
     cmd = ["tar", "-cvJSf", dst]
-    for
-    rc = subprocess.call(["tar", "-cvJSf", dst, fname],
-                          stdout=subprocess.PIPE,
-                          stderr=subprocess.PIPE)
+    for fname in fnames:
+        cmd.append(fname)
+
+    rc = subprocess.call(cmd,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
 
     if rc != 0:
         return (rc, None)
@@ -158,13 +214,13 @@ def main(cfg_json, nof_tracks):
 
     logging.info("Running JSON {0} with # of tracks {1}".format(cfg_json, nof_tracks))
 
-    output = run(app, "run.mac")
+    output = run(app, mac)
     if output == None:
         return 1
 
-    tarname = compress_data(output, output, log)
+    rc, tarname = compress_data(output, output, log)
     if tarname == None:
-        return 2
+        return rc
 
     rc = upload_sftp(tarname)
 
@@ -175,6 +231,7 @@ if __name__ == '__main__':
 
     if argc == 1:
         print("Usage: main.py config.json <optional number of tracks>")
+        sys.exit(0)
 
     nof_tracks = -1
     if argc > 2:
