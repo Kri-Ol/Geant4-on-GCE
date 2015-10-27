@@ -3,34 +3,51 @@
 
 import sys
 import subprocess
-import paramiko
+import logging
+import json
 
-def run(app, script):
+def run(app, mac):
     """
-    Run application with script as its first argument
+    Run application with macro as its first argument
 
-    :param app: application to run
-    :type app: str
-    :param app: application to run
-    :type app: str
-    :returns: file name of the stdout output
-    :rtype: str
+    Parameters
+    ------------
+
+    app: string
+        application to run
+
+    mac: string
+        macro to pass to the application as first argument
+
+    returns: string
+        file name of the stdout output
     """
+    logging.info("Running app {0} wih the macro {1}: {0} {1}".format(app, mac) )
 
-    p = subprocess.Popen([app, script], stdin  = subprocess.PIPE,
-                                        stdout = subprocess.PIPE,
-                                        stderr = subprocess.PIPE)
-    out, err = p.communicate()
+    p = subprocess.Popen([app, mac], stdin  = subprocess.PIPE,
+                                     stdout = subprocess.PIPE,
+                                     stderr = subprocess.PIPE)
+    std_out, std_err = p.communicate()
 
-    fname = "LOG"
+    fname = app + "_" + mac + ".output"
     with open(fname, "w") as the_file:
-        the_file.write(out)
+        the_file.write(std_out)
 
+    logging.info("Done with run")
     return fname
 
-def upload_sftp(aname):
+def upload_sftp(tarname):
     """
     Upload data to the server using SFTP
+
+    Parameters
+    ------------
+
+    tarname: string
+        TAR archive to create
+
+    returns: string
+        file name of the stdout output
     """
 
     try:
@@ -46,6 +63,7 @@ def upload_sftp(aname):
 
         dest_dir = "."
         remote_dir = os.path.join("/home/sphinx/gcloud", dest_dir)
+
         try:
             sftp.chdir(remote_dir)  # test if remote_dir exists
         except IOError:
@@ -59,22 +77,28 @@ def upload_sftp(aname):
             transport.close()
 
             rc = 0
-        except OSError:
-            logging.debug("upload_sftp: OS failure ")
-            rc = -1
-            return rc
 
+    except OSError:
+        logging.debug("upload_sftp: OS failure ")
+        rc = -1
         return rc
 
-def compress_data(fname):
+    return rc
+
+def compress_data(tarname, *fnames):
     """
     Pack and compress everything outgoing
 
-    :param fname: file to compress
-    :type fname: str
+    :param arcname: name of the archive to make
+    :type arcname: str
+    :param fnames: files to compress
+    :type fnames: list of str
     """
 
-    dst = fname + ".tar.xz"
+    dst = tarname + ".tar.xz"
+
+    cmd = ["tar", "-cvJSf", dst]
+    for
     rc = subprocess.call(["tar", "-cvJSf", dst, fname],
                           stdout=subprocess.PIPE,
                           stderr=subprocess.PIPE)
@@ -84,20 +108,78 @@ def compress_data(fname):
 
     return (rc, dst)
 
-def main():
+def read_config(cfname):
     """
-    Run app using
+    Read cluster configuration file as JSON
+
+    Parameters
+    ------------
+
+    cfname: string
+        cluster config name
+
+    returns: dictionary
+        JSON parsed as dictionary
     """
 
-    log = run("DICOM", "run.mac")
+    data = None
+    with open(cfname) as data_file:
+        data = json.load(data_file)
+    return data
 
-    rc = subprocess.Popen(["xz", log], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+def main(cfg_json, nof_tracks):
+    """
+    Run app using configuration from JSON and # of tracks
 
-    fname = log + ".xz"
+    Parameters
+    ------------
 
-    rc = send(fname)
+    cfg_json: string
+        JSON file name with configuration
+
+    nof_tracks: int
+        # of tracks to compute
+
+    returns: int
+        return code, 0 on success, non-zero on failure
+    """
+
+    wrk_dir = os.getcwd()
+    data    = read_config(cfg_json)
+
+    app = data["application"]
+    mac = data["macro"]
+
+    log = app + ".rlog"
+
+    # configuring logging
+    logging.basicConfig(filename=os.path.join(wrk_dir, log), level=logging.DEBUG)
+    logging.info("Started")
+
+    logging.info("Running JSON {0} with # of tracks {1}".format(cfg_json, nof_tracks))
+
+    output = run(app, "run.mac")
+    if output == None:
+        return 1
+
+    tarname = compress_data(output, output, log)
+    if tarname == None:
+        return 2
+
+    rc = upload_sftp(tarname)
 
     return rc
 
 if __name__ == '__main__':
-    return main()
+    argc = len(sys.argv)
+
+    if argc == 1:
+        print("Usage: main.py config.json <optional number of tracks>")
+
+    nof_tracks = -1
+    if argc > 2:
+        nof_tracks = int(sys.argv[2])
+
+    cfg_json = sys.argv[1]
+
+    sys.exit(main(cfg_json, nof_tracks))
