@@ -58,3 +58,6 @@ target/
 
 # sublime text
 *.sublime*
+
+# Subversion
+.svn/
