@@ -8,7 +8,7 @@ import logging
 import json
 import paramiko
 
-def fix_mac(mac, nof_tracks):
+def fix_macro(mac, nof_tracks):
     """
     Set number of tracks in macro to user-defined value
 
@@ -34,7 +34,7 @@ def fix_mac(mac, nof_tracks):
     lines = []
     with open(mac, "rt") as f:
         lines = f.readlines()
-        if "beamOn" in line:
+        if "/run/beamOn" in line:
             b = k
         k += 1
 
