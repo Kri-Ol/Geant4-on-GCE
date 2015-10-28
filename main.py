@@ -29,13 +29,16 @@ def fix_macro(mac, nof_tracks):
     if nof_tracks < 0:
         return 0
 
-    b = -1
-    k = 0
     lines = []
     with open(mac, "rt") as f:
         lines = f.readlines()
+        
+    b = -1
+    k = 0
+    for line in lines:
         if "/run/beamOn" in line:
             b = k
+            break
         k += 1
 
     if b < 0:
