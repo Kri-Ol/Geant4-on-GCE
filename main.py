@@ -77,11 +77,12 @@ def run(app, mac, nof_tracks):
     if rc != 0:
         return None
 
-    p = subprocess.Popen([app, mac], stdin  = subprocess.PIPE,
-                                     stdout = subprocess.PIPE,
-                                     stderr = subprocess.PIPE)
-    std_out, std_err = p.communicate()
+    cmd = [os.path.join(".",app) + " " + mac]
 
+    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+    std_out, std_err = p.communicate()
+    
     fname = app + "_" + mac + ".output"
     with open(fname, "w") as the_file:
         the_file.write(std_out)
