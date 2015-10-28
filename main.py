@@ -214,7 +214,7 @@ def main(cfg_json, nof_tracks):
 
     logging.info("Running JSON {0} with # of tracks {1}".format(cfg_json, nof_tracks))
 
-    output = run(app, mac)
+    output = run(app, mac, nof_tracks)
     if output == None:
         return 1
 
