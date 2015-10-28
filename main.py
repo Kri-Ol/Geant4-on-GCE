@@ -70,7 +70,7 @@ def run(app, mac, nof_tracks):
     """
     logging.info("Running app {0} wih the macro {1}: {2}".format(app, mac, nof_tracks) )
 
-    rc = fix_mac(mac, nof_tracks)
+    rc = fix_macro(mac, nof_tracks)
     if rc != 0:
         return None
 
