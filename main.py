@@ -8,7 +8,7 @@ import logging
 import json
 import paramiko
 
-def fix_mac(mac, nof_tracks):
+def fix_macro(mac, nof_tracks):
     """
     Set number of tracks in macro to user-defined value
 
@@ -29,13 +29,16 @@ def fix_mac(mac, nof_tracks):
     if nof_tracks < 0:
         return 0
 
-    b = -1
-    k = 0
     lines = []
     with open(mac, "rt") as f:
         lines = f.readlines()
-        if "beamOn" in line:
+        
+    b = -1
+    k = 0
+    for line in lines:
+        if "/run/beamOn" in line:
             b = k
+            break
         k += 1
 
     if b < 0:
@@ -71,15 +74,16 @@ def run(app, mac, nof_tracks):
 
     logging.info("Running app {0} wih the macro {1}: {2}".format(app, mac, nof_tracks) )
 
-    rc = fix_mac(mac, nof_tracks)
+    rc = fix_macro(mac, nof_tracks)
     if rc != 0:
         return None
 
-    p = subprocess.Popen([app, mac], stdin  = subprocess.PIPE,
-                                     stdout = subprocess.PIPE,
-                                     stderr = subprocess.PIPE)
-    std_out, std_err = p.communicate()
+    cmd = [os.path.join(".",app) + " " + mac]
 
+    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+
+    std_out, std_err = p.communicate()
+    
     fname = app + "_" + mac + ".output"
     with open(fname, "w") as the_file:
         the_file.write(std_out)
@@ -239,7 +243,7 @@ def main(cfg_json, nof_tracks):
 
     logging.info("Running JSON {0} with # of tracks {1}".format(cfg_json, nof_tracks))
 
-    output = run(app, mac)
+    output = run(app, mac, nof_tracks)
     if output == None:
         return 1
 

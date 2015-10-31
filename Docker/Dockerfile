@@ -3,10 +3,10 @@ FROM ubuntu:baseline
 MAINTAINER O.K. <https://github.com/Kri-Ol/Geant4-on-GCE>
 
 # install additional packages
-RUN apt-get install -y qt4-default && \
-    apt-get install -y mesa-utils && \
-    apt-get install -y libxerces-c3.1 && \
-    apt-get autoremove; apt-get clean; apt-get autoclean
+#RUN apt-get install -y qt4-default && \
+#    apt-get install -y mesa-utils && \
+#    apt-get install -y libxerces-c3.1 && \
+#    apt-get autoremove; apt-get clean; apt-get autoclean
 
 # making run directory
 RUN mkdir -p /home/beamuser/run
