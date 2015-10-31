@@ -68,6 +68,7 @@ def run(app, mac, nof_tracks):
     returns: string
         file name of the stdout output
     """
+
     logging.info("Running app {0} wih the macro {1}: {2}".format(app, mac, nof_tracks) )
 
     rc = fix_mac(mac, nof_tracks)
@@ -86,12 +87,38 @@ def run(app, mac, nof_tracks):
     logging.info("Done with run")
     return fname
 
-def upload_sftp(tarname):
+def read_credentials(creds):
+    """
+    Given the JSON credentials, return tuple with relevant info
+
+    creds: string
+        JSON file with credentials
+
+    returns: tuple
+        host, port, user, pswd, dest
+    """
+
+    data = None
+    with open(creds) as json_file:
+        data = json.load(json_file)
+
+    host = data["host"]
+    port = data["port"]
+    user = data["user"]
+    pswd = data["pswd"]
+    dest = data["dest"]
+
+    return (host, port, user, pswd, dest)
+
+def upload_sftp(creds, tarname):
     """
     Upload data to the server using SFTP
 
     Parameters
     ------------
+
+    creds: string
+        JSON file with credentials
 
     tarname: string
         TAR archive to create
@@ -103,19 +130,17 @@ def upload_sftp(tarname):
     rc = 0
 
     try:
-        host = "75.148.23.250"
-        port = 22
+
+        host, port, user, pswd, dest = read_credentials(creds)
 
         transport = paramiko.Transport((host, port))
 
-        password = "twobob2015@xc"
-        username = "sphinx"
-        transport.connect(username=username, password=password)
+        transport.connect(username=user, password=pswd)
 
         sftp = paramiko.SFTPClient.from_transport(transport)
 
-        dest_dir   = "/home/sphinx/gcloud"
-        remote_dir = dest_dir # os.path.join("/home/sphinx/gcloud", dest_dir)
+        dest_dir   = dest
+        remote_dir = dest_dir
 
         try:
             sftp.chdir(remote_dir)  # test if remote_dir exists

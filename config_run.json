@@ -1,4 +1,4 @@
 {
-    "application": "DICOM",
-    "macro": "run.mac"
+    "application": "col",
+    "macro": "batch.mac"
 }
