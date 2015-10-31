@@ -7,6 +7,7 @@ import subprocess
 import logging
 import json
 import paramiko
+import hashlib
 
 def fix_macro(mac, nof_tracks):
     """
@@ -32,7 +33,7 @@ def fix_macro(mac, nof_tracks):
     lines = []
     with open(mac, "rt") as f:
         lines = f.readlines()
-        
+
     b = -1
     k = 0
     for line in lines:
@@ -83,7 +84,7 @@ def run(app, mac, nof_tracks):
     p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
     std_out, std_err = p.communicate()
-    
+
     fname = app + "_" + mac + ".output"
     with open(fname, "w") as the_file:
         the_file.write(std_out)
@@ -168,6 +169,53 @@ def upload_sftp(creds, tarname):
 
     return rc
 
+def sign(*fnames):
+    """
+    Compute hash functions of the downloaded cups, to be
+    used as a signature
+
+    Parameters
+    ------------
+
+    fnames: list
+        file names to sign
+
+    returns: string
+        file name of file with signatures
+    """
+
+    logging.info("Start data signing")
+
+    algo = "sha1"
+
+    if not (algo in hashlib.algorithms):
+        raise Exception("data_uploader", "No SHA1 hash available")
+
+    hashl = []
+
+    # everything in work.dir: input, phantom, cups, etc
+    for fname in fnames:
+
+        hasher = hashlib.sha1()
+
+        ctx = fname
+        with open(ctx, "rb") as afile:
+            buf = afile.read()
+            hasher.update(buf)
+
+            hashl.append((ctx, hasher.hexdigest()))
+
+    with open(algo, "wt") as f:
+        for l in hashl:
+            f.write(l[0])
+            f.write(": ")
+            f.write(l[1])
+            f.write("\n")
+
+    logging.info("Done data signing")
+
+    return algo
+
 def compress_data(tarname, *fnames):
     """
     Pack and compress everything outgoing
@@ -178,11 +226,14 @@ def compress_data(tarname, *fnames):
     :type fnames: list of str
     """
 
+    signs = sign(*fnames)
+
     dst = tarname + ".tar.xz"
 
     cmd = ["tar", "-cvJSf", dst]
     for fname in fnames:
         cmd.append(fname)
+    cmd.append(signs)
 
     rc = subprocess.call(cmd,
                          stdout=subprocess.PIPE,
