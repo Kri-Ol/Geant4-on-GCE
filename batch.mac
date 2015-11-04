@@ -1,0 +1,17 @@
+/control/verbose 0
+/tracking/verbose 0
+/run/verbose 0
+/event/verbose 0
+
+/control/execute C25.in
+
+/run/numberOfThreads 1
+
+/run/initialize
+
+/control/execute source.in
+
+#/random/setSeeds 111 65535
+
+# NB: number of events! Each event generate 10 photons
+/run/beamOn 100
