@@ -14,4 +14,4 @@
 #/random/setSeeds 111 65535
 
 # NB: number of events! Each event generate 10 photons
-/run/beamOn 100
+/run/beamOn 1000000000
