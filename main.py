@@ -9,7 +9,7 @@ import json
 import paramiko
 import hashlib
 
-def fix_macro(mac, nof_tracks):
+def fix_macro(mac, C, nof_tracks, nof_threads):
     """
     Set number of tracks in macro to user-defined value
 
@@ -19,13 +19,19 @@ def fix_macro(mac, nof_tracks):
     mac: string
         macro to pass to the application as first argument
 
-    nof_tracks: integer
+    C: int
+        collimator, in mm        
+
+    nof_tracks: int
         number of tracks to set
 
-    returns: integer
+    nof_threads: int
+        number of threads to set
+
+    returns: int
         return code
     """
-    logging.info("Fixing the macro {0} {1}".format(mac, nof_tracks) )
+    logging.info("Fixing the macro {0} {1} {2} {3}".format(mac, C, nof_tracks, nof_threads) )
 
     if nof_tracks < 0:
         return 0
@@ -34,26 +40,54 @@ def fix_macro(mac, nof_tracks):
     with open(mac, "rt") as f:
         lines = f.readlines()
 
-    b = -1
-    k = 0
+    # fixing up collimator
+    l = -1
+    k =  0
     for line in lines:
-        if "/run/beamOn" in line:
-            b = k
+        if "C25.in" in line:
+            l = k
             break
         k += 1
 
-    if b < 0:
-        return 0
+    if l >= 0:
+        s = lines[l].split(' ')
+        lines[l] = s[0] + " " + "C{0}.in".format(C)
 
-    s = lines[b].split(' ')
-    lines[b] = s[0] + " " + str(nof_tracks)
+    # fixing up nof tracks
+    if nof_tracks > 0:
+        l = -1
+        k =  0
+        for line in lines:
+            if "/run/beamOn" in line:
+                l = k
+                break
+            k += 1
 
+        if l >= 0:
+            s = lines[l].split(' ')
+            lines[l] = s[0] + " " + str(nof_tracks)
+            
+    # fixing up nof threads
+    if nof_threads > 0:
+        l = -1
+        k =  0
+        for line in lines:
+            if "/run/numberOfThreads" in line:
+                l = k
+                break
+            k += 1
+
+        if l >= 0:
+            s = lines[l].split(' ')
+            lines[l] = s[0] + " " + str(nof_threads)    
+
+    # save it all
     with open(mac, "wt") as f:
         f.writelines(lines)
 
     return 0
 
-def run(app, mac, nof_tracks):
+def run(app, mac, C, nof_tracks, nof_threads):
     """
     Run application with macro as its first argument
 
@@ -65,24 +99,32 @@ def run(app, mac, nof_tracks):
 
     mac: string
         macro to pass to the application as first argument
+        
+    C: int
+        collimator, in mm        
 
-    nof_tracks: integer
+    nof_tracks: int
         number of tracks to run
 
+    nof_threads: int
+        number of threads to run
+        
     returns: string
         file name of the stdout output
     """
 
-    logging.info("Running app {0} wih the macro {1}: {2}".format(app, mac, nof_tracks) )
+    logging.info("Running app {0} wih the macro {1}: {2} {3} {4}".format(app, mac, C, nof_tracks, nof_threads) )
 
-    rc = fix_macro(mac, nof_tracks)
+    rc = fix_macro(mac, C, nof_tracks, nof_threads)
     if rc != 0:
         return None
 
-    cmd = [os.path.join(".",app) + " " + mac]
+    #cmd = [os.path.join(".",app) + " " + mac]
+    #p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
-    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-
+    cmd = [os.path.join(".",app), mac]
+    p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    
     std_out, std_err = p.communicate()
 
     fname = app + "_" + mac + ".output"
@@ -263,7 +305,7 @@ def read_config(cfname):
         data = json.load(data_file)
     return data
 
-def main(cfg_json, nof_tracks):
+def main(cfg_json, C, nof_tracks, nof_threads):
     """
     Run app using configuration from JSON and # of tracks
 
@@ -273,9 +315,15 @@ def main(cfg_json, nof_tracks):
     cfg_json: string
         JSON file name with configuration
 
+    C: int
+        collimator, in mm
+
     nof_tracks: int
         # of tracks to compute
 
+    nof_threads: int
+        # of threads to run
+        
     returns: int
         return code, 0 on success, non-zero on failure
     """
@@ -292,9 +340,9 @@ def main(cfg_json, nof_tracks):
     logging.basicConfig(filename=os.path.join(wrk_dir, log), level=logging.DEBUG)
     logging.info("Started")
 
-    logging.info("Running JSON {0} with # of tracks {1}".format(cfg_json, nof_tracks))
+    logging.info("Running JSON {0} with C{1},  # of tracks {2} and # of threads {3}".format(cfg_json, C, nof_tracks, nof_threads))
 
-    output = run(app, mac, nof_tracks)
+    output = run(app, mac, C, nof_tracks, nof_threads)
     if output == None:
         return 1
 
@@ -310,13 +358,28 @@ if __name__ == '__main__':
     argc = len(sys.argv)
 
     if argc == 1:
-        print("Usage: main.py config.json <optional number of tracks>")
+        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads>")
         sys.exit(0)
 
-    nof_tracks = -1
-    if argc > 2:
-        nof_tracks = int(sys.argv[2])
-
     cfg_json = sys.argv[1]
+    
+    C = 25
+    try:
+        C = int(sys.argv[2])
+    except:
+        pass
+        
+    nof_tracks = -1
+    try:
+        nof_tracks = int(sys.argv[3])
+    except:
+        pass
+    
+    nof_threads = -1 
+    try:
+        nof_threads = int(sys.argv[4])
+    except:
+        pass        
 
-    sys.exit(main(cfg_json, nof_tracks))
+    sys.exit(main(cfg_json, C, nof_tracks, nof_threads))
+

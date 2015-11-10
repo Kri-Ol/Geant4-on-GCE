@@ -92,11 +92,12 @@ def make_runtime(top, path_to_g4, target_dir):
 
     # get the source code
 
-    #repo =  "https://github.com/Oleg-Krivosheev/G4DCM"
-    #rc = subprocess.call(["git", "clone", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    repo =  "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4"
-    rc   = subprocess.call(["svn", "checkout", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    #repo =  "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4"
+    #rc   = subprocess.call(["svn", "checkout", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+       
+    repo =  "https://github.com/Tatiana-Krivosheev/CollimationStudies"
+    rc = subprocess.call(["git", "clone", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     head, tail = os.path.split(repo)
 
     if rc != 0:
@@ -129,7 +130,11 @@ def get_repo(target_dir):
 
     os.mkdir(target_dir)
 
-    rc = subprocess.call(["git", "clone", "https://github.com/Kri-Ol/Geant4-on-GCE", target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    repo = "https://github.com/Kri-Ol/Geant4-on-GCE"
+    rc = subprocess.call(["git", "clone", repo, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    #repo = "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4onGCE"
+    #rc = subprocess.call(["svn", "checkout", repo, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     return rc
 
