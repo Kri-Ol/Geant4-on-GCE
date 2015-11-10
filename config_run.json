@@ -1,5 +1,6 @@
 {
     "application": "col",
-    "macro": "batch.mac"
+    "macro": "batch.mac",
+    "credentials": "config_credentials.json"
 }
 

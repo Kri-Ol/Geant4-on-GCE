@@ -84,6 +84,20 @@ def copy_GEANT4(top):
         raise RuntimeError("Unable to copy Geant4, aboring")
 
     return src
+    
+def copy_creds(top, target_dir):
+    """
+    Copy credentials
+    """
+
+    fname = "config_credentials.json"
+    
+    src = os.path.join(top, "..", "..", fname)
+    dst = os.path.join(top, target_dir, fname)
+    
+    shutil.copyfile(src, dst)
+    
+    return 0
 
 def make_runtime(top, path_to_g4, target_dir):
     """
@@ -91,7 +105,6 @@ def make_runtime(top, path_to_g4, target_dir):
     """
 
     # get the source code
-
 
     #repo =  "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4"
     #rc   = subprocess.call(["svn", "checkout", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -164,6 +177,9 @@ def main():
     rc = make_runtime(top, path_to_g4, "run")
     if rc != True:
         raise RuntimeError("Unable to build run time")
+        
+    # step 4 - copy credentials
+    rc = copy_creds(top, "run")
 
     # step last - builddocker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:col",  "."], stderr=subprocess.PIPE)

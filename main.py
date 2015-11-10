@@ -333,6 +333,7 @@ def main(cfg_json, C, nof_tracks, nof_threads):
 
     app = data["application"]
     mac = data["macro"]
+    crd = data["credentials"]
 
     log = app + ".rlog"
 
@@ -350,7 +351,7 @@ def main(cfg_json, C, nof_tracks, nof_threads):
     if tarname == None:
         return rc
 
-    rc = upload_sftp(tarname)
+    rc = upload_sftp(crd, tarname)
 
     return rc
 
