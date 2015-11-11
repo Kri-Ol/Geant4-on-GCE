@@ -8,10 +8,10 @@
     "containers": [
       {
         "name": "col",
-        "image": "us.gcr.io/direct-disk-101619/g4-4322",
+        "image": "us.gcr.io/direct-disk-101619/g4-4325",
         "workingDir": "/home/beamuser/run",
         "command": [ "python", "main.py"],
-        "args": ["config_run.json", "25", "100000000", "16"]
+        "args": ["config_run.json", "25", "2000000000", "32", "2711", "2711"]
       }
     ],
     "restartPolicy": "Never"
