@@ -84,7 +84,7 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
 
     if l >= 0:
         s = lines[l].split(' ')
-        lines[l] = s[0] + " " + "C{0}.in".format(C)
+        lines[l] = s[0] + " " + "C{0}.in\n".format(C) 
 
     # fixing up nof tracks
     if nof_tracks > 0:
