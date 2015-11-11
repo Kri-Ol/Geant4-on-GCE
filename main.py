@@ -111,7 +111,7 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
 
         if l >= 0:
             s = lines[l].split(' ')
-            lines[l] = s[0] + " " + str(seed[0]) + " " + str(seed[1]) "\n"
+            lines[l] = s[0] + " " + str(seed[0]) + " " + str(seed[1]) + "\n"
             
     # save it all
     with open(mac, "wt") as f:
