@@ -9,7 +9,40 @@ import json
 import paramiko
 import hashlib
 
-def fix_macro(mac, C, nof_tracks, nof_threads):
+def fix_macro_int(lines, key, value):
+    """
+    Fix lines to have new value for a given key
+    
+    lines: array of strings
+        where key to be found
+        
+    key: string
+        key
+        
+    value: int
+        set to be for a given key
+        
+    returns: bool
+        True on success, False otherwise
+    """
+    
+    l = -1
+    k =  0
+    for line in lines:
+        if key in line:
+            l = k
+            break
+        k += 1
+
+    if l >= 0:
+        s = lines[l].split(' ')
+        lines[l] = s[0] + " " + str(value)
+        return True
+        
+    return False
+
+
+def fix_macro(mac, C, nof_tracks, nof_threads, seed):
     """
     Set number of tracks in macro to user-defined value
 
@@ -28,13 +61,13 @@ def fix_macro(mac, C, nof_tracks, nof_threads):
     nof_threads: int
         number of threads to set
 
+    seed: int
+        RNG initial seed
+
     returns: int
         return code
     """
-    logging.info("Fixing the macro {0} {1} {2} {3}".format(mac, C, nof_tracks, nof_threads) )
-
-    if nof_tracks < 0:
-        return 0
+    logging.info("Fixing the macro {0} {1} {2} {3} {4}".format(mac, C, nof_tracks, nof_threads, seed) )
 
     lines = []
     with open(mac, "rt") as f:
@@ -55,39 +88,30 @@ def fix_macro(mac, C, nof_tracks, nof_threads):
 
     # fixing up nof tracks
     if nof_tracks > 0:
-        l = -1
-        k =  0
-        for line in lines:
-            if "/run/beamOn" in line:
-                l = k
-                break
-            k += 1
-
-        if l >= 0:
-            s = lines[l].split(' ')
-            lines[l] = s[0] + " " + str(nof_tracks)
+        rc = fix_macro_int(lines, "/run/beamOn", nof_tracks)
+        if not rc:
+            raise ValueError("No beamOn in macro")
+    
             
     # fixing up nof threads
     if nof_threads > 0:
-        l = -1
-        k =  0
-        for line in lines:
-            if "/run/numberOfThreads" in line:
-                l = k
-                break
-            k += 1
+        rc = fix_macro_int(lines, "/run/numberOfThreads", nof_threads)
+        if not rc:
+            raise ValueError("No numberOfThreads in macro")
 
-        if l >= 0:
-            s = lines[l].split(' ')
-            lines[l] = s[0] + " " + str(nof_threads)    
-
+    # fixing up seed
+    if seed > 0:
+        rc = fix_macro_int(lines, "/random/setSeeds", seed)
+        if not rc:
+            raise ValueError("No setSeeds in macro")
+            
     # save it all
     with open(mac, "wt") as f:
         f.writelines(lines)
 
     return 0
 
-def run(app, mac, C, nof_tracks, nof_threads):
+def run(app, mac, C, nof_tracks, nof_threads, seed):
     """
     Run application with macro as its first argument
 
@@ -109,13 +133,16 @@ def run(app, mac, C, nof_tracks, nof_threads):
     nof_threads: int
         number of threads to run
         
+    seed: int
+        RNG seed
+        
     returns: string
         file name of the stdout output
     """
 
-    logging.info("Running app {0} wih the macro {1}: {2} {3} {4}".format(app, mac, C, nof_tracks, nof_threads) )
+    logging.info("Running app {0} wih the macro {1}: {2} {3} {4} {5}".format(app, mac, C, nof_tracks, nof_threads, seed) )
 
-    rc = fix_macro(mac, C, nof_tracks, nof_threads)
+    rc = fix_macro(mac, C, nof_tracks, nof_threads, seed)
     if rc != 0:
         return None
 
@@ -305,7 +332,7 @@ def read_config(cfname):
         data = json.load(data_file)
     return data
 
-def main(cfg_json, C, nof_tracks, nof_threads):
+def main(cfg_json, C, nof_tracks, nof_threads, seed):
     """
     Run app using configuration from JSON and # of tracks
 
@@ -341,9 +368,9 @@ def main(cfg_json, C, nof_tracks, nof_threads):
     logging.basicConfig(filename=os.path.join(wrk_dir, log), level=logging.DEBUG)
     logging.info("Started")
 
-    logging.info("Running JSON {0} with C{1},  # of tracks {2} and # of threads {3}".format(cfg_json, C, nof_tracks, nof_threads))
+    logging.info("Running JSON {0} with C{1},  # of tracks {2} and # of threads {3} and Rseed {4}".format(cfg_json, C, nof_tracks, nof_threads, seed))
 
-    output = run(app, mac, C, nof_tracks, nof_threads)
+    output = run(app, mac, C, nof_tracks, nof_threads, seed)
     if output == None:
         return 1
 
@@ -359,7 +386,7 @@ if __name__ == '__main__':
     argc = len(sys.argv)
 
     if argc == 1:
-        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads>")
+        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads> <optional RNG seed>")
         sys.exit(0)
 
     cfg_json = sys.argv[1]
@@ -380,7 +407,13 @@ if __name__ == '__main__':
     try:
         nof_threads = int(sys.argv[4])
     except:
-        pass        
+        pass
 
-    sys.exit(main(cfg_json, C, nof_tracks, nof_threads))
+    seed = -1 
+    try:
+        seed = int(sys.argv[5])
+    except:
+        pass
+        
+    sys.exit(main(cfg_json, C, nof_tracks, nof_threads, seed))
 
