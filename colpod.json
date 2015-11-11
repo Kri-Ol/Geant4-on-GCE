@@ -7,19 +7,13 @@
   "spec": {
     "containers": [
       {
-        "name": "the_name",
-        "image": "us.gcr.io/direct-disk-101619/docker",
+        "name": "col",
+        "image": "us.gcr.io/direct-disk-101619/g4-4322",
         "workingDir": "/home/beamuser/run",
         "command": [ "python", "main.py"],
-        "args": ["1000000000"],
-        "resources": {
-            "limits": {
-                "cpu": "700m"
-            }
-        }
+        "args": ["config_run.json", "25", "100000000", "16"]
       }
     ],
     "restartPolicy": "Never"
   }
 }
-
