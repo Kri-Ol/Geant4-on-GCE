@@ -61,7 +61,7 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
     nof_threads: int
         number of threads to set
 
-    seed: int
+    seed: tuple of ints
         RNG initial seed
 
     returns: int
@@ -100,10 +100,18 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
             raise ValueError("No numberOfThreads in macro")
 
     # fixing up seed
-    if seed > 0:
-        rc = fix_macro_int(lines, "/random/setSeeds", seed)
-        if not rc:
-            raise ValueError("No setSeeds in macro")
+    if seed != None:
+        l = -1
+        k =  0
+        for line in lines:
+            if "/random/setSeeds" in line:
+                l = k
+                break
+            k += 1
+
+        if l >= 0:
+            s = lines[l].split(' ')
+            lines[l] = s[0] + " " + str(seed[0]) + " " + str(seed[1]) "\n"
             
     # save it all
     with open(mac, "wt") as f:
@@ -133,7 +141,7 @@ def run(app, mac, C, nof_tracks, nof_threads, seed):
     nof_threads: int
         number of threads to run
         
-    seed: int
+    seed: tuple of int
         RNG seed
         
     returns: string
@@ -351,6 +359,9 @@ def main(cfg_json, C, nof_tracks, nof_threads, seed):
     nof_threads: int
         # of threads to run
         
+    seed: tuple of ints
+        RNG seed        
+        
     returns: int
         return code, 0 on success, non-zero on failure
     """
@@ -386,7 +397,7 @@ if __name__ == '__main__':
     argc = len(sys.argv)
 
     if argc == 1:
-        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads> <optional RNG seed>")
+        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads> <optional RNG pair of seeds>")
         sys.exit(0)
 
     cfg_json = sys.argv[1]
@@ -409,9 +420,11 @@ if __name__ == '__main__':
     except:
         pass
 
-    seed = -1 
+    seed = None
     try:
-        seed = int(sys.argv[5])
+        seed1 = int(sys.argv[5])
+        seed2 = int(sys.argv[6])
+        seed = (seed1, seed2)
     except:
         pass
         
