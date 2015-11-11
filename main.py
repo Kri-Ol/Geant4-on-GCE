@@ -36,7 +36,7 @@ def fix_macro_int(lines, key, value):
 
     if l >= 0:
         s = lines[l].split(' ')
-        lines[l] = s[0] + " " + str(value)
+        lines[l] = s[0] + " " + str(value) + "\n"
         return True
         
     return False
