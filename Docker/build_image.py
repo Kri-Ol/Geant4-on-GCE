@@ -39,8 +39,8 @@ def get_geant_installation():
     try:
         g4ledata = os.environ["G4LEDATA"]
     except KeyError:
-
         raise RuntimeError("No G4LEDATA found, aborting")
+
     path = g4ledata
     while True:
         path, tail = os.path.split(path)
@@ -84,19 +84,19 @@ def copy_GEANT4(top):
         raise RuntimeError("Unable to copy Geant4, aboring")
 
     return src
-    
+
 def copy_creds(top, target_dir):
     """
     Copy credentials
     """
 
-    fname = "config_credentials.json"
-    
+    fname = "config_sftp.json"
+
     src = os.path.join(top, "..", "..", fname)
     dst = os.path.join(top, target_dir, fname)
-    
+
     shutil.copyfile(src, dst)
-    
+
     return 0
 
 def make_runtime(top, path_to_g4, target_dir):
@@ -108,7 +108,7 @@ def make_runtime(top, path_to_g4, target_dir):
 
     #repo =  "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4"
     #rc   = subprocess.call(["svn", "checkout", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-       
+
     repo =  "https://github.com/Tatiana-Krivosheev/CollimationStudies"
     rc = subprocess.call(["git", "clone", repo], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     head, tail = os.path.split(repo)
@@ -146,8 +146,8 @@ def get_repo(target_dir):
     repo = "https://github.com/Kri-Ol/Geant4-on-GCE"
     rc = subprocess.call(["git", "clone", repo, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    #repo = "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4onGCE"
-    #rc = subprocess.call(["svn", "checkout", repo, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ##repo = "https://192.168.1.230/svn/XCSW/MC_simulation/MC_phsp/Geant4onGCE"
+    ##rc = subprocess.call(["svn", "checkout", repo, target_dir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     return rc
 
@@ -155,11 +155,6 @@ def main():
     """
     Building Docker image
     """
-
-    # step 0 - pull ubuntu:15.04 from docker hub
-    rc = subprocess.call(["docker", "pull", "ubuntu:15.04"], stderr=subprocess.PIPE)
-    if rc != 0:
-        raise RuntimeError("Unable to pull ubuntu:15.04 image")
 
     top = os.getcwd()
     print(top)
@@ -177,7 +172,7 @@ def main():
     rc = make_runtime(top, path_to_g4, "run")
     if rc != True:
         raise RuntimeError("Unable to build run time")
-        
+
     # step 4 - copy credentials
     rc = copy_creds(top, "run")
 
