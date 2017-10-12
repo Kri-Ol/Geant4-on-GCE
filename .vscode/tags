@@ -4,33 +4,92 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-C	../main.py	/^        C = int(sys.argv[2])$/;"	kind:variable	line:407
-C	../main.py	/^    C = 25$/;"	kind:variable	line:405
-argc	../main.py	/^    argc = len(sys.argv)$/;"	kind:variable	line:397
+C	../Docker/run/main.py	/^        C = int(sys.argv[2])$/;"	kind:variable	line:397
+C	../Docker/run/main.py	/^    C = 25$/;"	kind:variable	line:395
+C	../main.py	/^        C = int(sys.argv[2])$/;"	kind:variable	line:399
+C	../main.py	/^    C = 25$/;"	kind:variable	line:397
+argc	../Docker/run/main.py	/^    argc = len(sys.argv)$/;"	kind:variable	line:382
+argc	../main.py	/^    argc = len(sys.argv)$/;"	kind:variable	line:384
+bin	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^bin = array( 'f' )$/;"	kind:variable	line:22
 build_image.py	../Docker/build_image.py	1;"	kind:file	line:1
-cfg_json	../main.py	/^    cfg_json = sys.argv[1]$/;"	kind:variable	line:403
-compress_data	../main.py	/^def compress_data(tarname, *fnames):$/;"	kind:function	line:296
+build_image.py	../Docker/run/Docker/build_image.py	1;"	kind:file	line:1
+c1	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^c1 = TCanvas('c1', 'test35', 200, 10, 700, 500)$/;"	kind:variable	line:14
+compress_data	../Docker/run/main.py	/^def compress_data(tarname, *fnames):$/;"	kind:function	line:297
+compress_data	../main.py	/^def compress_data(tarname, *fnames):$/;"	kind:function	line:299
 copy_GEANT4	../Docker/build_image.py	/^def copy_GEANT4(top):$/;"	kind:function	line:59
+copy_GEANT4	../Docker/run/Docker/build_image.py	/^def copy_GEANT4(top):$/;"	kind:function	line:59
 copy_creds	../Docker/build_image.py	/^def copy_creds(top, target_dir):$/;"	kind:function	line:88
-fix_macro	../main.py	/^def fix_macro(mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:45
+copy_creds	../Docker/run/Docker/build_image.py	/^def copy_creds(top, target_dir):$/;"	kind:function	line:88
+fix_macro	../Docker/run/main.py	/^def fix_macro(mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:44
+fix_macro	../main.py	/^def fix_macro(mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:44
+fix_macro_int	../Docker/run/main.py	/^def fix_macro_int(lines, key, value):$/;"	kind:function	line:12
 fix_macro_int	../main.py	/^def fix_macro_int(lines, key, value):$/;"	kind:function	line:12
+gammaraytel.py	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	1;"	kind:file	line:1
 get_geant_installation	../Docker/build_image.py	/^def get_geant_installation():$/;"	kind:function	line:30
+get_geant_installation	../Docker/run/Docker/build_image.py	/^def get_geant_installation():$/;"	kind:function	line:30
 get_repo	../Docker/build_image.py	/^def get_repo(target_dir):$/;"	kind:function	line:136
+get_repo	../Docker/run/Docker/build_image.py	/^def get_repo(target_dir):$/;"	kind:function	line:136
+hE	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^hE=tree.findH1D( "\/hbook\/10" )$/;"	kind:variable	line:23
+hPl	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^hPl=tree.findH1D( "\/hbook\/20" )$/;"	kind:variable	line:24
+hXZ	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^hXZ=tree.findH2D("\/hbook\/30")$/;"	kind:variable	line:25
+hYZ	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^hYZ=tree.findH2D("\/hbook\/40")$/;"	kind:variable	line:26
+h_1	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^h_1 = TH1F('unbiased','Source Spectrum',40,bin)$/;"	kind:variable	line:27
+h_2	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^h_2 = TH1F('biased','Source Spectrum',40,bin)$/;"	kind:variable	line:28
+hf	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^hf=af.createHistogramFactory( tree )                             $/;"	kind:variable	line:8
+histoSim	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/xray_fluorescence/readPY.py	/^histoSim = treeSim.retrieveH1D("1")$/;"	kind:variable	line:3
+input_file_1	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^input_file_1=TFile('test35a.root','READ')$/;"	kind:variable	line:8
+input_file_2	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^input_file_2=TFile('test35b.root','READ')$/;"	kind:variable	line:9
 main	../Docker/build_image.py	/^def main():$/;"	kind:function	line:154
-main	../main.py	/^def main(cfg_json, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:343
+main	../Docker/run/Docker/build_image.py	/^def main():$/;"	kind:function	line:154
+main	../Docker/run/main.py	/^def main(cfg_json, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:326
+main	../main.py	/^def main(cfg_json, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:328
+main.py	../Docker/run/main.py	1;"	kind:file	line:1
 main.py	../main.py	1;"	kind:file	line:1
 make_runtime	../Docker/build_image.py	/^def make_runtime(top, path_to_g4, target_dir):$/;"	kind:function	line:102
-nof_threads	../main.py	/^        nof_threads = int(sys.argv[4])$/;"	kind:variable	line:419
-nof_threads	../main.py	/^    nof_threads = -1 $/;"	kind:variable	line:417
-nof_tracks	../main.py	/^        nof_tracks = int(sys.argv[3])$/;"	kind:variable	line:413
-nof_tracks	../main.py	/^    nof_tracks = -1$/;"	kind:variable	line:411
-read_config	../main.py	/^def read_config(cfname):$/;"	kind:function	line:324
-read_credentials	../main.py	/^def read_credentials(creds):$/;"	kind:function	line:172
-run	../main.py	/^def run(app, mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:122
-seed	../main.py	/^        seed = (seed1, seed2)$/;"	kind:variable	line:427
-seed	../main.py	/^    seed = None$/;"	kind:variable	line:423
-seed1	../main.py	/^        seed1 = int(sys.argv[5])$/;"	kind:variable	line:425
-seed2	../main.py	/^        seed2 = int(sys.argv[6])$/;"	kind:variable	line:426
-sign	../main.py	/^def sign(*fnames):$/;"	kind:function	line:249
+make_runtime	../Docker/run/Docker/build_image.py	/^def make_runtime(top, path_to_g4, target_dir):$/;"	kind:function	line:102
+n	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^n = 41$/;"	kind:variable	line:21
+nof_threads	../Docker/run/main.py	/^        nof_threads = int(sys.argv[4])$/;"	kind:variable	line:415
+nof_threads	../Docker/run/main.py	/^    nof_threads = -1$/;"	kind:variable	line:413
+nof_threads	../main.py	/^        nof_threads = int(sys.argv[4])$/;"	kind:variable	line:417
+nof_threads	../main.py	/^    nof_threads = -1$/;"	kind:variable	line:415
+nof_tracks	../Docker/run/main.py	/^        nof_tracks = int(sys.argv[3])$/;"	kind:variable	line:406
+nof_tracks	../Docker/run/main.py	/^    nof_tracks = -1$/;"	kind:variable	line:404
+nof_tracks	../main.py	/^        nof_tracks = int(sys.argv[3])$/;"	kind:variable	line:408
+nof_tracks	../main.py	/^    nof_tracks = -1$/;"	kind:variable	line:406
+pl	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/xray_fluorescence/readPY.py	/^pl = RootPlotter()          $/;"	kind:variable	line:5
+plot_1_file	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plotfiles.py	/^def plot_1_file (file):$/;"	kind:function	line:6
+plot_2_files	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plotfiles.py	/^def plot_2_files (file):$/;"	kind:function	line:38
+plotall.py	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plotall.py	1;"	kind:file	line:1
+plotfiles.py	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plotfiles.py	1;"	kind:file	line:1
+plottest35.py	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	1;"	kind:file	line:1
+pr	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^pr = pl.currentRegion()$/;"	kind:variable	line:34
+rc	../Docker/run/main.py	/^    rc = main(run_json, C, nof_tracks, nof_threads, seed)$/;"	kind:variable	line:433
+rc	../main.py	/^    rc = main(run_json, C, nof_tracks, nof_threads, seed)$/;"	kind:variable	line:435
+readPY.py	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/xray_fluorescence/readPY.py	1;"	kind:file	line:1
+read_credentials	../Docker/run/main.py	/^def read_credentials(creds):$/;"	kind:function	line:173
+read_credentials	../main.py	/^def read_credentials(creds):$/;"	kind:function	line:175
+run	../Docker/run/main.py	/^def run(app, mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:126
+run	../main.py	/^def run(app, mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:128
+run_json	../Docker/run/main.py	/^        run_json = sys.argv[1]$/;"	kind:variable	line:390
+run_json	../Docker/run/main.py	/^    run_json = ""$/;"	kind:variable	line:388
+run_json	../main.py	/^        run_json = sys.argv[1]$/;"	kind:variable	line:392
+run_json	../main.py	/^    run_json = ""$/;"	kind:variable	line:390
+seed	../Docker/run/main.py	/^        seed = (seed1, seed2)$/;"	kind:variable	line:428
+seed	../Docker/run/main.py	/^    seed = None$/;"	kind:variable	line:422
+seed	../main.py	/^        seed = (seed1, seed2)$/;"	kind:variable	line:430
+seed	../main.py	/^    seed = None$/;"	kind:variable	line:424
+seed1	../Docker/run/main.py	/^        seed1 = int(sys.argv[5])$/;"	kind:variable	line:424
+seed1	../main.py	/^        seed1 = int(sys.argv[5])$/;"	kind:variable	line:426
+seed2	../Docker/run/main.py	/^        seed2 = int(sys.argv[6])$/;"	kind:variable	line:425
+seed2	../main.py	/^        seed2 = int(sys.argv[6])$/;"	kind:variable	line:427
+sign	../Docker/run/main.py	/^def sign(*fnames):$/;"	kind:function	line:250
+sign	../main.py	/^def sign(*fnames):$/;"	kind:function	line:252
+t1	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^t1 = gROOT.FindObject("MyTuple")$/;"	kind:variable	line:40
+t1	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/extended/eventgenerator/exgps/macros/plottest35.py	/^t1 = gROOT.FindObject('MyTuple')$/;"	kind:variable	line:33
 temp_chdir	../Docker/build_image.py	/^def temp_chdir(path):$/;"	kind:function	line:11
-upload_sftp	../main.py	/^def upload_sftp(creds, tarname):$/;"	kind:function	line:195
+temp_chdir	../Docker/run/Docker/build_image.py	/^def temp_chdir(path):$/;"	kind:function	line:11
+tree	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^tree=tf.create()                                                 $/;"	kind:variable	line:4
+treeHBook	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/gammaray_telescope/gammaraytel.py	/^treeHBook=tf.create("gammaraytel.hbook", "hbook", 1, 0 )              $/;"	kind:variable	line:12
+treeSim	../Docker/v4.10.01.p03/share/Geant4-10.1.3/examples/advanced/xray_fluorescence/readPY.py	/^treeSim = Proxy_Store("xrayfluo.xml","xml",3)$/;"	kind:variable	line:2
+upload_sftp	../Docker/run/main.py	/^def upload_sftp(creds, tarname):$/;"	kind:function	line:196
+upload_sftp	../main.py	/^def upload_sftp(creds, tarname):$/;"	kind:function	line:198

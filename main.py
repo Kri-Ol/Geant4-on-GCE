@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import sys
 import os
@@ -84,8 +83,8 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
 
     if l >= 0:
         s = lines[l]
-        s.replace(o, "C{0}.in".format(C))
-        lines[l] = s
+        n = "C{0}.in".format(C)
+        lines[l] = s.replace(o, n)
 
     # fixing up nof tracks
     if nof_tracks > 0:
@@ -150,24 +149,21 @@ def run(app, mac, C, nof_tracks, nof_threads, seed):
 
     logging.info("Running app {0} wih the macro {1}: {2} {3} {4} {5}".format(app, mac, C, nof_tracks, nof_threads, seed) )
 
-    rc = fix_macro(mac, C, nof_tracks, nof_threads, seed)
-    if rc != 0:
-        return None
+    macro = fix_macro(mac, C, nof_tracks, nof_threads, seed)
+    if macro is None:
+        return (None, None)
 
-    #cmd = [os.path.join(".",app) + " " + mac]
-    #p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-
-    cmd = [os.path.join(".",app), mac]
+    cmd = [os.path.join(".", app), macro]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 
     std_out, std_err = p.communicate()
 
-    fname = app + "_" + mac + ".output"
+    fname = app + "_" + mac + "_" + "C{0}".format(C) + "_" + str(nof_tracks) + "_" +  str(nof_threads) + "_" + "({0},{1})".format(seed[0], seed[1]) + ".output"
     with open(fname, "w") as the_file:
         the_file.write(std_out)
 
     logging.info("Done with run")
-    return fname
+    return (fname, macro)
 
 def read_credentials(creds):
     """
@@ -212,7 +208,6 @@ def upload_sftp(creds, tarname):
     rc = 0
 
     try:
-
         host, port, user, pswd, dest = read_credentials(creds)
 
         transport = paramiko.Transport((host, port))
@@ -315,7 +310,6 @@ def compress_data(tarname, *fnames):
     rc = subprocess.call(cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
-
     if rc != 0:
         return (rc, None)
 
@@ -365,11 +359,11 @@ def main(cfg_json, C, nof_tracks, nof_threads, seed):
 
     logging.info("Running JSON {0} with C{1},  # of tracks {2} and # of threads {3} and Rseed {4}".format(cfg_json, C, nof_tracks, nof_threads, seed))
 
-    output = run(app, mac, C, nof_tracks, nof_threads, seed)
+    output, macro = run(app, mac, C, nof_tracks, nof_threads, seed)
     if output == None:
         return 1
 
-    rc, tarname = compress_data(output, output, log)
+    rc, tarname = compress_data(output, output, macro, log)
     if tarname == None:
         return rc
 
