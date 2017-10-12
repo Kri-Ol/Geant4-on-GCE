@@ -174,7 +174,7 @@ def main():
         raise RuntimeError("Unable to build run time")
 
     # step 4 - copy credentials
-    rc = copy_creds(top, "run")
+    rc = copy_creds(top, ".")
 
     # step last - builddocker image
     rc = subprocess.call(["docker", "build", "-t", "ubuntu:col",  "."], stderr=subprocess.PIPE)

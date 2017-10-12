@@ -12,20 +12,19 @@ import hashlib
 def fix_macro_int(lines, key, value):
     """
     Fix lines to have new value for a given key
-    
+
     lines: array of strings
         where key to be found
-        
+
     key: string
         key
-        
+
     value: int
         set to be for a given key
-        
+
     returns: bool
         True on success, False otherwise
     """
-    
     l = -1
     k =  0
     for line in lines:
@@ -38,13 +37,13 @@ def fix_macro_int(lines, key, value):
         s = lines[l].split(' ')
         lines[l] = s[0] + " " + str(value) + "\n"
         return True
-        
+
     return False
 
 
 def fix_macro(mac, C, nof_tracks, nof_threads, seed):
     """
-    Set number of tracks in macro to user-defined value
+    Set number of tracks, threads in macro to user-defined value
 
     Parameters
     ------------
@@ -53,7 +52,7 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
         macro to pass to the application as first argument
 
     C: int
-        collimator, in mm        
+        collimator, in mm
 
     nof_tracks: int
         number of tracks to set
@@ -64,8 +63,8 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
     seed: tuple of ints
         RNG initial seed
 
-    returns: int
-        return code
+    returns: string
+        macro to run
     """
     logging.info("Fixing the macro {0} {1} {2} {3} {4}".format(mac, C, nof_tracks, nof_threads, seed) )
 
@@ -74,25 +73,26 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
         lines = f.readlines()
 
     # fixing up collimator
+    o = "C25.in"
     l = -1
     k =  0
     for line in lines:
-        if "C25.in" in line:
+        if o in line:
             l = k
             break
         k += 1
 
     if l >= 0:
-        s = lines[l].split(' ')
-        lines[l] = s[0] + " " + "C{0}.in\n".format(C) 
+        s = lines[l]
+        s.replace(o, "C{0}.in".format(C))
+        lines[l] = s
 
     # fixing up nof tracks
     if nof_tracks > 0:
         rc = fix_macro_int(lines, "/run/beamOn", nof_tracks)
         if not rc:
             raise ValueError("No beamOn in macro")
-    
-            
+
     # fixing up nof threads
     if nof_threads > 0:
         rc = fix_macro_int(lines, "/run/numberOfThreads", nof_threads)
@@ -112,12 +112,12 @@ def fix_macro(mac, C, nof_tracks, nof_threads, seed):
         if l >= 0:
             s = lines[l].split(' ')
             lines[l] = s[0] + " " + str(seed[0]) + " " + str(seed[1]) + "\n"
-            
+
     # save it all
-    with open(mac, "wt") as f:
+    with open("batch.mac", "wt") as f:
         f.writelines(lines)
 
-    return 0
+    return "batch.mac"
 
 def run(app, mac, C, nof_tracks, nof_threads, seed):
     """
@@ -131,19 +131,19 @@ def run(app, mac, C, nof_tracks, nof_threads, seed):
 
     mac: string
         macro to pass to the application as first argument
-        
+
     C: int
-        collimator, in mm        
+        collimator, in mm
 
     nof_tracks: int
         number of tracks to run
 
     nof_threads: int
         number of threads to run
-        
+
     seed: tuple of int
         RNG seed
-        
+
     returns: string
         file name of the stdout output
     """
@@ -159,7 +159,7 @@ def run(app, mac, C, nof_tracks, nof_threads, seed):
 
     cmd = [os.path.join(".",app), mac]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    
+
     std_out, std_err = p.communicate()
 
     fname = app + "_" + mac + ".output"
@@ -321,24 +321,6 @@ def compress_data(tarname, *fnames):
 
     return (rc, dst)
 
-def read_config(cfname):
-    """
-    Read cluster configuration file as JSON
-
-    Parameters
-    ------------
-
-    cfname: string
-        cluster config name
-
-    returns: dictionary
-        JSON parsed as dictionary
-    """
-
-    data = None
-    with open(cfname) as data_file:
-        data = json.load(data_file)
-    return data
 
 def main(cfg_json, C, nof_tracks, nof_threads, seed):
     """
@@ -354,20 +336,22 @@ def main(cfg_json, C, nof_tracks, nof_threads, seed):
         collimator, in mm
 
     nof_tracks: int
-        # of tracks to compute
+        # of tracks to compute, actual would be 10 times more
 
     nof_threads: int
         # of threads to run
-        
+
     seed: tuple of ints
-        RNG seed        
-        
+        RNG seed
+
     returns: int
         return code, 0 on success, non-zero on failure
     """
 
     wrk_dir = os.getcwd()
-    data    = read_config(cfg_json)
+    data = None
+    with open(cfg_json) as data_file:
+        data = json.load(data_file)
 
     app = data["application"]
     mac = data["macro"]
@@ -397,36 +381,54 @@ if __name__ == '__main__':
     argc = len(sys.argv)
 
     if argc == 1:
-        print("Usage: main.py config.json <collimator size in mm> <optional number of tracks> <optional number of threads> <optional RNG pair of seeds>")
+        print("Usage: main.py run.json <collimator size in mm> <number of tracks> <number of threads> <RNG pair of seeds>")
         sys.exit(0)
 
-    cfg_json = sys.argv[1]
-    
+    run_json = ""
+    try:
+        run_json = sys.argv[1]
+    except:
+        print("No run config")
+        sys.exit(10)
+
     C = 25
     try:
         C = int(sys.argv[2])
+        if C <= 0:
+            raise ValueError("Collimator")
     except:
-        pass
-        
+        print("No collimator")
+        sys.exit(11)
+
     nof_tracks = -1
     try:
         nof_tracks = int(sys.argv[3])
+        if nof_tracks <= 0:
+            raise ValueError("No # of tracks")
     except:
-        pass
-    
-    nof_threads = -1 
+        print("No # of tracks")
+        sys.exit(12)
+
+    nof_threads = -1
     try:
         nof_threads = int(sys.argv[4])
+        if nof_threads <= 0:
+            raise ValueError("No # of threads")
     except:
-        pass
+        print("No # of threads")
+        sys.exit(13)
 
     seed = None
     try:
         seed1 = int(sys.argv[5])
         seed2 = int(sys.argv[6])
+        if seed1 <= 0 or seed2 <= 0:
+            raise ValueError("No seeds")
         seed = (seed1, seed2)
     except:
-        pass
-        
-    sys.exit(main(cfg_json, C, nof_tracks, nof_threads, seed))
+        print("No seeds")
+        sys.exit(14)
 
+    rc = main(run_json, C, nof_tracks, nof_threads, seed)
+
+    sys.exit(rc)

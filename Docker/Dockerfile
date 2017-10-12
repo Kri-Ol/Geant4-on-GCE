@@ -11,7 +11,7 @@ RUN mkdir -p /opt/Geant/v4.10.01.p03
 COPY v4.10.01.p03 /opt/Geant/v4.10.01.p03
 
 # magic
-COPY config_sftp.json /home/beamuser/runEGS/config_sftp.json
+COPY config_sftp.json /home/beamuser/run/config_sftp.json
 
 # python environment
 ENV PYTHONPATH /home/beamuser/run/XcDefinitions:/home/beamuser/run/XcMath:/home/beamuser/run/XcMCCore:/home/beamuser/run/XcIO
