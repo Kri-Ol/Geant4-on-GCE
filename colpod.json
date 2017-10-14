@@ -11,7 +11,7 @@
         "image": "us.gcr.io/direct-disk-101619/DOCKER",
         "workingDir": "/home/beamuser/run",
         "command": [ "python", "main.py"],
-        "args": ["config_run.json", "25", "2000000000", "32", "2711", "2711"],
+        "args": "",
         "resources": {
             "limits": {
                 "cpu": "700m"
