@@ -14,7 +14,7 @@
         "args": "",
         "resources": {
             "limits": {
-                "cpu": "700m"
+                "cpu": "725m"
             }
         }
       }
