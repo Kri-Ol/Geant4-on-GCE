@@ -6,34 +6,36 @@ import shutil
 import subprocess
 
 
-def unpack_run(run_fname):
+def unpack_run(dir_name, run_name):
     """
-    Given the run filename, unpack it
+    Given the run directory and filename, unpack it
 
     Parameters
     ----------
 
-    shot_name: string
-        name of the archive with compressed shot data
+    dir_name: string
+        name of the directory of the cases
 
-    returns: integer
+    run_name: string
+        name of the archive with compressed run data
+
+    returns: (integer, output
         0 is Ok, non-zero means error
     """
-
-    cmd = "tar xJvf {0}".format(run_fname)
+    cmd = "tar xJvf {0}".format(os.path.join(dir_name, run_name))
 
     rc = subprocess.call(cmd, shell=True)
 
     output = None
     if rc == 0:
-        output = os.path.splitext(os.path.splitext(run_fname)[0])[0] # remote tar.xz
+        output = os.path.splitext(os.path.splitext(run_name)[0])[0] # remote tar.xz
 
     return (rc, output)
 
 
 def process_output(output):
     """
-    Given the output file
+    Given the output file, filter out photons, electrons and positrons
     """
 
     if output is None:
@@ -57,18 +59,28 @@ def process_output(output):
 
 def remove_leftovers(output):
     """
+    Remove the output file
     """
     os.remove(output)
 
-def process_run(run_fname):
+def process_run(dir_name, run_name):
     """
-    This method process one packed archive of simulation
+    Given the run directory and filename, process run
+
+    Parameters
+    ----------
+
+    dir_name: string
+        name of the directory of the cases
+
+    run_name: string
+        name of the archive with compressed run data
     """
 
-    if run_fname is None:
+    if run_name is None:
         return -1
 
-    rc, output = unpack_run(run_fname)
+    rc, output = unpack_run(dir_name, run_name)
 
     g = None
     e = None
@@ -82,15 +94,19 @@ def process_run(run_fname):
 if __name__ =='__main__':
     nof_args = len(sys.argv)
 
-    if nof_args == 1:
-        print("need file name")
+    if nof_args == 1 or  nof_args == 2:
+        print("need directory and file name")
         sys.exit(1)
 
-    run_fname = None
+    dir_name = None
     if nof_args >= 2:
-        run_fname = sys.argv[1]
+        dir_name = sys.argv[1]
 
-    g, e, p = process_run(run_fname)
+    run_name = None
+    if nof_args >= 3:
+        run_name = sys.argv[2]
+
+    g, e, p = process_run(dir_name, run_name)
 
     rc = 0 if g is None else 1
 

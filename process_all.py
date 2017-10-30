@@ -23,7 +23,7 @@ def get_lsof(dir_name, pattern):
 
     for output_name in os.listdir(dir_name):
         if fnmatch.fnmatch(output_name, "*.xz"):
-            fname = os.path.join(dir_name, output_name)
+            fname = (dir_name, output_name)
             lsof.append(fname)
 
     return lsof
@@ -41,7 +41,8 @@ def process_all(dir_name, pattern):
     electrons = list()
     positrons = list()
 
-
+    for dir_name, run_name in lsof:
+        photons, eletrons, positrons = process_run.process_run(dir_name, run_name)
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
