@@ -7,27 +7,8 @@ import shutil
 import subprocess
 import time
 
-def case2name(case):
-    """
-    """
-    s = case.split(" ")
-    s = [q for q in s if q] # remove empty strings
-    return "_".join(s)
+import helpers
 
-def case2pod(case):
-    """
-    """
-    s = case.split(" ")
-    s = [q for q in s if q] # remove empty strings
-    return "-".join(s)
-
-def case2args(case):
-    """
-    """
-    s = case.split(" ")
-    s = [q for q in s if q] # remove empty strings
-    s[0] += ".json"
-    return s
 
 def read_template(template):
     """
@@ -41,10 +22,11 @@ def read_template(template):
 
 def make_pod_from_template(temjson, case, docker2run):
     """
-    given JSON from template and case, make in-memory pod json
+    given JSON from template, case to compute, and docker to run,
+    make in-memory pod json
     """
 
-    pod = case2pod( case )
+    pod = helpers.case2pod( case )
 
     temjson["metadata"]["name"] = pod
 
@@ -52,7 +34,7 @@ def make_pod_from_template(temjson, case, docker2run):
 
     temjson["spec"]["containers"][0]["image"] = docker2run
 
-    temjson["spec"]["containers"][0]["args"]  = case2args(case)
+    temjson["spec"]["containers"][0]["args"]  = helpers.case2args(case)
 
     return temjson
 
@@ -65,7 +47,7 @@ def make_json_pod(template, case, docker2run):
     temjson = read_template(template)
     outjson = make_pod_from_template(temjson, case, docker2run)
 
-    fname = "pod" + "_" + case2name(case) + ".json"
+    fname = "pod" + "_" + helpers.case2name(case) + ".json"
     with open(fname, "w+") as f:
         f.write(json.dumps(outjson, indent=4))
 
