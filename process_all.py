@@ -14,6 +14,7 @@ PATTERN = "*.tar.xz"
 
 def get_lsof(dir_name, pattern):
     """
+    Given directory and pattern, return list of files
     """
 
     lsof = list()
@@ -31,6 +32,7 @@ def get_lsof(dir_name, pattern):
 
 def process_all(dir_name, pattern):
     """
+    Given directory name and pattern, process all files in the directory which follows the pattern
     """
 
     lsof = get_lsof(dir_name, pattern)
@@ -42,19 +44,38 @@ def process_all(dir_name, pattern):
     positrons = list()
 
     for dir_name, run_name in lsof:
-        photons, eletrons, positrons = process_run.process_run(dir_name, run_name)
+        gg, ee, pp = process_run.process_run(dir_name, run_name)
+
+        if gg is not None:
+            for g in gg:
+                photons.append(g)
+
+        if ee is not None:
+            for e in ee:
+                electrons.append(e)
+
+        if pp is not None:
+            for p in pp:
+                positrons.append(p)
+
+    return (photons if len(photons)>0 else None, electrons if len(electrons)>0 else None, positrons if len(positrons)>0 else None)
+
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("need dir name")
+        print("need dir_name")
         sys.exit(1)
 
     dir_name = None
     if nof_args >= 2:
         dir_name = sys.argv[1]
 
-    rc = process_all(dir_name)
+    g, e, p = process_all(dir_name, PATTERN)
+
+    print(len(g))
+    print(len(e))
+    print(len(p))
 
     sys.exit(rc)

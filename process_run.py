@@ -22,7 +22,12 @@ def unpack_run(dir_name, run_name):
     returns: (integer, output
         0 is Ok, non-zero means error
     """
-    cmd = "tar xJvf {0}".format(os.path.join(dir_name, run_name))
+
+    full_name = os.path.join(dir_name, run_name)
+    full_name = full_name.replace("(", "\\(")
+    full_name = full_name.replace(")", "\\)")
+    cmd = "tar xJvf {0}".format(full_name)
+    print(cmd)
 
     rc = subprocess.call(cmd, shell=True)
 
@@ -42,7 +47,7 @@ def process_output(output):
         return (None, None, None) # no photons, electrons or positrons
 
     photons   = list()
-    electron  = list()
+    electrons = list()
     positrons = list()
 
     with open(output, "r") as f:
@@ -59,9 +64,12 @@ def process_output(output):
 
 def remove_leftovers(output):
     """
-    Remove the output file
+    Remove the output files
     """
     os.remove(output)
+    os.remove("batch.mac")
+    os.remove("col.rlog")
+    os.remove("sha1")
 
 def process_run(dir_name, run_name):
     """
@@ -106,8 +114,20 @@ if __name__ =='__main__':
     if nof_args >= 3:
         run_name = sys.argv[2]
 
-    g, e, p = process_run(dir_name, run_name)
+    photons, electrons, positrons = process_run(dir_name, run_name)
 
-    rc = 0 if g is None else 1
+    if photons is not None:
+        for photon in photons:
+            pass # print(photon)
+
+    if electrons is not None:
+        for electron in electrons:
+            print(electron)
+
+    if positrons is not None:
+        for positron in positrons:
+            print(positron)
+
+    rc = 0 if photons is None else 1
 
     sys.exit(rc)
