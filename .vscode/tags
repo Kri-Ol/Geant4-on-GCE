@@ -22,8 +22,8 @@ cases_fname	../startCluster.py	/^    cases_fname = None$/;"	kind:variable	line:2
 compress_data	../main.py	/^def compress_data(tarname, *fnames):$/;"	kind:function	line:291
 copy_GEANT4	../Docker/build_image.py	/^def copy_GEANT4(top):$/;"	kind:function	line:59
 copy_creds	../Docker/build_image.py	/^def copy_creds(top, target_dir):$/;"	kind:function	line:88
-dir_name	../process_all.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:60
-dir_name	../process_all.py	/^    dir_name = None$/;"	kind:variable	line:58
+dir_name	../process_all.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:73
+dir_name	../process_all.py	/^    dir_name = None$/;"	kind:variable	line:71
 dir_name	../process_run.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:111
 dir_name	../process_run.py	/^    dir_name = None$/;"	kind:variable	line:109
 fix_macro	../main.py	/^def fix_macro(mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:43
@@ -44,7 +44,7 @@ make_pod_from_template	../addCluster.py	/^def make_pod_from_template(temjson, ca
 make_pod_from_template	../startCluster.py	/^def make_pod_from_template(temjson, case, docker2run):$/;"	kind:function	line:86
 make_runtime	../Docker/build_image.py	/^def make_runtime(top, path_to_g4, target_dir):$/;"	kind:function	line:102
 nof_args	../addCluster.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:122
-nof_args	../process_all.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:52
+nof_args	../process_all.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:65
 nof_args	../process_run.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:103
 nof_args	../startCluster.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:244
 nof_nodes	../startCluster.py	/^        nof_nodes = int(sys.argv[2])$/;"	kind:variable	line:257
@@ -60,7 +60,6 @@ process_run	../process_run.py	/^def process_run(dir_name, run_name):$/;"	kind:fu
 process_run.py	../process_run.py	1;"	kind:file	line:1
 rc	../addCluster.py	/^    rc = main(cases_fname)$/;"	kind:variable	line:132
 rc	../main.py	/^    rc = main(run_json, C, nof_tracks, nof_threads, seed)$/;"	kind:variable	line:426
-rc	../process_all.py	/^    rc = process_all(dir_name, PATTERN)$/;"	kind:variable	line:62
 rc	../process_run.py	/^    rc = 0 if photons is None else 1$/;"	kind:variable	line:131
 rc	../startCluster.py	/^    rc = main(cases_fname, nof_nodes)$/;"	kind:variable	line:263
 read_cases	../addCluster.py	/^def read_cases(fname):$/;"	kind:function	line:64

@@ -2,10 +2,8 @@
 
 import os
 import sys
-import json
 import shutil
 import fnmatch
-import subprocess
 
 import process_run
 
@@ -72,10 +70,24 @@ if __name__ =='__main__':
     if nof_args >= 2:
         dir_name = sys.argv[1]
 
-    g, e, p = process_all(dir_name, PATTERN)
+    gg, ee, pp = process_all(dir_name, PATTERN)
 
-    print(len(g))
-    print(len(e))
-    print(len(p))
+    print(len(gg)) if gg is not None else print("=== No photons ===")
+    print(len(ee)) if ee is not None else print("=== No electrons ===")
+    print(len(pp)) if pp is not None else print("=== No positrons ===")
 
+    with open("PHSF", mode="w+") as f:
+        if gg is not None:
+            for g in gg:
+                f.write(g)
+
+        if ee is not None:
+            for e in ee:
+                f.write(e)
+
+        if pp is not None:
+            for p in pp:
+                f.write(p)
+
+    rc = 0
     sys.exit(rc)
