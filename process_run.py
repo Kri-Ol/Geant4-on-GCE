@@ -70,6 +70,7 @@ def remove_leftovers(output):
     os.remove("col.rlog")
     os.remove("sha1")
 
+
 def process_run(dir_name, run_name):
     """
     Given the run directory and filename, process run
@@ -97,6 +98,7 @@ def process_run(dir_name, run_name):
         remove_leftovers(output)
 
     return g, e, p
+
 
 if __name__ =='__main__':
     nof_args = len(sys.argv)
