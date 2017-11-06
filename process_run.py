@@ -86,7 +86,7 @@ def process_run(dir_name, run_name):
     """
 
     if run_name is None:
-        return -1
+        return None, None, None
 
     rc, output = unpack_run(dir_name, run_name)
 
@@ -103,7 +103,7 @@ def process_run(dir_name, run_name):
 if __name__ =='__main__':
     nof_args = len(sys.argv)
 
-    if nof_args == 1 or  nof_args == 2:
+    if nof_args == 1 or nof_args == 2:
         print("need directory and file name")
         sys.exit(1)
 
@@ -129,6 +129,6 @@ if __name__ =='__main__':
         for positron in positrons:
             print(positron)
 
-    rc = 0 if photons is None else 1
+    rc = 1 if photons is None else 0
 
     sys.exit(rc)

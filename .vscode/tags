@@ -6,7 +6,7 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 C	../main.py	/^        C = int(sys.argv[2])$/;"	kind:variable	line:390
 C	../main.py	/^    C = 25$/;"	kind:variable	line:388
-PATTERN	../process_all.py	/^PATTERN = "*.tar.xz"$/;"	kind:variable	line:12
+PATTERN	../process_all.py	/^PATTERN = "*.tar.xz"$/;"	kind:variable	line:10
 __init__.py	../__init__.py	1;"	kind:file	line:1
 addCluster.py	../addCluster.py	1;"	kind:file	line:1
 argc	../main.py	/^    argc = len(sys.argv)$/;"	kind:variable	line:375
@@ -22,14 +22,14 @@ cases_fname	../startCluster.py	/^    cases_fname = None$/;"	kind:variable	line:2
 compress_data	../main.py	/^def compress_data(tarname, *fnames):$/;"	kind:function	line:291
 copy_GEANT4	../Docker/build_image.py	/^def copy_GEANT4(top):$/;"	kind:function	line:59
 copy_creds	../Docker/build_image.py	/^def copy_creds(top, target_dir):$/;"	kind:function	line:88
-dir_name	../process_all.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:73
-dir_name	../process_all.py	/^    dir_name = None$/;"	kind:variable	line:71
-dir_name	../process_run.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:111
-dir_name	../process_run.py	/^    dir_name = None$/;"	kind:variable	line:109
+dir_name	../process_all.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:71
+dir_name	../process_all.py	/^    dir_name = None$/;"	kind:variable	line:69
+dir_name	../process_run.py	/^        dir_name = sys.argv[1]$/;"	kind:variable	line:110
+dir_name	../process_run.py	/^    dir_name = None$/;"	kind:variable	line:108
 fix_macro	../main.py	/^def fix_macro(mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:43
 fix_macro_int	../main.py	/^def fix_macro_int(lines, key, value):$/;"	kind:function	line:11
 get_geant_installation	../Docker/build_image.py	/^def get_geant_installation():$/;"	kind:function	line:30
-get_lsof	../process_all.py	/^def get_lsof(dir_name, pattern):$/;"	kind:function	line:15
+get_lsof	../process_all.py	/^def get_lsof(dir_name, pattern):$/;"	kind:function	line:13
 get_repo	../Docker/build_image.py	/^def get_repo(target_dir):$/;"	kind:function	line:136
 helpers.py	../helpers.py	1;"	kind:file	line:1
 main	../Docker/build_image.py	/^def main():$/;"	kind:function	line:154
@@ -44,8 +44,8 @@ make_pod_from_template	../addCluster.py	/^def make_pod_from_template(temjson, ca
 make_pod_from_template	../startCluster.py	/^def make_pod_from_template(temjson, case, docker2run):$/;"	kind:function	line:86
 make_runtime	../Docker/build_image.py	/^def make_runtime(top, path_to_g4, target_dir):$/;"	kind:function	line:102
 nof_args	../addCluster.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:122
-nof_args	../process_all.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:65
-nof_args	../process_run.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:103
+nof_args	../process_all.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:63
+nof_args	../process_run.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:102
 nof_args	../startCluster.py	/^    nof_args = len(sys.argv)$/;"	kind:variable	line:244
 nof_nodes	../startCluster.py	/^        nof_nodes = int(sys.argv[2])$/;"	kind:variable	line:257
 nof_nodes	../startCluster.py	/^    nof_nodes = -1 # default number of nodes$/;"	kind:variable	line:255
@@ -53,14 +53,15 @@ nof_threads	../main.py	/^        nof_threads = int(sys.argv[4])$/;"	kind:variabl
 nof_threads	../main.py	/^    nof_threads = -1$/;"	kind:variable	line:406
 nof_tracks	../main.py	/^        nof_tracks = int(sys.argv[3])$/;"	kind:variable	line:399
 nof_tracks	../main.py	/^    nof_tracks = -1$/;"	kind:variable	line:397
-process_all	../process_all.py	/^def process_all(dir_name, pattern):$/;"	kind:function	line:33
+process_all	../process_all.py	/^def process_all(dir_name, pattern):$/;"	kind:function	line:31
 process_all.py	../process_all.py	1;"	kind:file	line:1
-process_output	../process_run.py	/^def process_output(output):$/;"	kind:function	line:41
-process_run	../process_run.py	/^def process_run(dir_name, run_name):$/;"	kind:function	line:74
+process_output	../process_run.py	/^def process_output(output):$/;"	kind:function	line:40
+process_run	../process_run.py	/^def process_run(dir_name, run_name):$/;"	kind:function	line:73
 process_run.py	../process_run.py	1;"	kind:file	line:1
 rc	../addCluster.py	/^    rc = main(cases_fname)$/;"	kind:variable	line:132
 rc	../main.py	/^    rc = main(run_json, C, nof_tracks, nof_threads, seed)$/;"	kind:variable	line:426
-rc	../process_run.py	/^    rc = 0 if photons is None else 1$/;"	kind:variable	line:131
+rc	../process_all.py	/^    rc = 0$/;"	kind:variable	line:92
+rc	../process_run.py	/^    rc = 0 if photons is None else 1$/;"	kind:variable	line:130
 rc	../startCluster.py	/^    rc = main(cases_fname, nof_nodes)$/;"	kind:variable	line:263
 read_cases	../addCluster.py	/^def read_cases(fname):$/;"	kind:function	line:64
 read_cases	../startCluster.py	/^def read_cases(fname):$/;"	kind:function	line:166
@@ -69,12 +70,12 @@ read_config	../startCluster.py	/^def read_config(cfname):$/;"	kind:function	line
 read_credentials	../main.py	/^def read_credentials(creds):$/;"	kind:function	line:168
 read_template	../addCluster.py	/^def read_template(template):$/;"	kind:function	line:13
 read_template	../startCluster.py	/^def read_template(template):$/;"	kind:function	line:66
-remove_leftovers	../process_run.py	/^def remove_leftovers(output):$/;"	kind:function	line:65
+remove_leftovers	../process_run.py	/^def remove_leftovers(output):$/;"	kind:function	line:64
 run	../main.py	/^def run(app, mac, C, nof_tracks, nof_threads, seed):$/;"	kind:function	line:121
 run_json	../main.py	/^        run_json = sys.argv[1]$/;"	kind:variable	line:383
 run_json	../main.py	/^    run_json = ""$/;"	kind:variable	line:381
-run_name	../process_run.py	/^        run_name = sys.argv[2]$/;"	kind:variable	line:115
-run_name	../process_run.py	/^    run_name = None$/;"	kind:variable	line:113
+run_name	../process_run.py	/^        run_name = sys.argv[2]$/;"	kind:variable	line:114
+run_name	../process_run.py	/^    run_name = None$/;"	kind:variable	line:112
 seed	../main.py	/^        seed = (seed1, seed2)$/;"	kind:variable	line:421
 seed	../main.py	/^    seed = None$/;"	kind:variable	line:415
 seed1	../main.py	/^        seed1 = int(sys.argv[5])$/;"	kind:variable	line:417
@@ -82,5 +83,5 @@ seed2	../main.py	/^        seed2 = int(sys.argv[6])$/;"	kind:variable	line:418
 sign	../main.py	/^def sign(*fnames):$/;"	kind:function	line:244
 startCluster.py	../startCluster.py	1;"	kind:file	line:1
 temp_chdir	../Docker/build_image.py	/^def temp_chdir(path):$/;"	kind:function	line:11
-unpack_run	../process_run.py	/^def unpack_run(dir_name, run_name):$/;"	kind:function	line:9
+unpack_run	../process_run.py	/^def unpack_run(dir_name, run_name):$/;"	kind:function	line:8
 upload_sftp	../main.py	/^def upload_sftp(creds, tarname):$/;"	kind:function	line:191
