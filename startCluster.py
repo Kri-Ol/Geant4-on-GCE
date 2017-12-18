@@ -35,7 +35,7 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
         return code from gcloud call
     """
 
-    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
+    cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4} --preemptible".format(CID, mach_type, nof_machs, ZID, disk_size)
 
     rc = subprocess.call(cmd, shell=True)
     return rc
@@ -228,7 +228,7 @@ def main(cases_fname, nof_nodes):
         pod_name = make_json_pod("colpod.json", case, docker2run)
         cmd = "kubectl create -f " + pod_name
         rc = 0
-        for k in range(0, 2): # several attempts to make a pod
+        for k in range(0, 3): # several attempts to make a pod
             rc = subprocess.call(cmd, shell=True)
             if rc == 0:
                 time.sleep(0.5)
