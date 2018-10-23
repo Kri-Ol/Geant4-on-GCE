@@ -90,7 +90,9 @@ def copy_creds(top, target_dir):
     Copy credentials
     """
 
-    fname = "config_sftp.json"
+    return
+
+    fname = "config_gs.json"
 
     src = os.path.join(top, "..", "..", fname)
     dst = os.path.join(top, target_dir, fname)
