@@ -1,5 +1,5 @@
 {
     "application": "col",
     "macro": "batchGP5.mac",
-    "credentials": "config_sftp.json"
+    "credentials": "config_gs.json"
 }

@@ -5,7 +5,6 @@ import os
 import subprocess
 import logging
 import json
-import paramiko
 import hashlib
 
 def fix_macro_int(lines, key, value):
@@ -188,7 +187,8 @@ def read_credentials(creds):
 
     return (host, port, user, pswd, dest)
 
-def upload_sftp(creds, tarname):
+
+def upload_data(creds, tarname):
     """
     Upload data to the server using SFTP
 
@@ -204,33 +204,20 @@ def upload_sftp(creds, tarname):
     returns: string
         file name of the stdout output
     """
+    from google.cloud import storage
 
     rc = 0
+
+    logging.info("Start data uploading [GSTOR]")
 
     try:
         host, port, user, pswd, dest = read_credentials(creds)
 
-        transport = paramiko.Transport((host, port))
+        storage_client = storage.Client.from_service_account_json(user)
+        bucket         = storage_client.get_bucket(pswd)
 
-        transport.connect(username=user, password=pswd)
-
-        sftp = paramiko.SFTPClient.from_transport(transport)
-
-        dest_dir   = dest
-        remote_dir = dest_dir
-
-        try:
-            sftp.chdir(remote_dir)  # test if remote_dir exists
-        except IOError:
-            sftp.mkdir(remote_dir)
-
-        sftp.chdir(remote_dir)
-
-        destination_path = os.path.join(remote_dir, tarname)
-        sftp.put(tarname, destination_path)
-
-        sftp.close()
-        transport.close()
+        blob = bucket.blob(os.path.join(dest, tarname))
+        blob.upload_from_filename(tarname)
 
         rc = 0
 
@@ -367,9 +354,10 @@ def main(cfg_json, C, nof_tracks, nof_threads, seed):
     if tarname == None:
         return rc
 
-    rc = upload_sftp(crd, tarname)
+    rc = upload_data(crd, tarname)
 
     return rc
+
 
 if __name__ == '__main__':
     argc = len(sys.argv)
