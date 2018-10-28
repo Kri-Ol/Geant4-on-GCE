@@ -9,7 +9,7 @@ import time
 
 import helpers
 
-def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
+def make_cluster(CID, mach_type, nof_machs, ZID, disk_size, preempt = True):
     """
     Given machine type and # of machines, creates cluster
 
@@ -31,11 +31,16 @@ def make_cluster(CID, mach_type, nof_machs, ZID, disk_size):
     disk_size: integer
         disk size in Gb
 
+    preempt: boolean
+        if True (default) make preemptible cluster, if False make standard one
+
     returns: integer
         return code from gcloud call
     """
 
     cmd = "gcloud container clusters create {0} --machine-type {1} --zone {3} --num-nodes {2} --disk-size={4}".format(CID, mach_type, nof_machs, ZID, disk_size)
+    if preempt:
+        cmd = cmd + " --preemptible"
 
     rc = subprocess.call(cmd, shell=True)
     return rc
