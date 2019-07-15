@@ -180,7 +180,7 @@ def read_cases(fname):
     return lines
 
 
-def main(cases_fname, nof_nodes):
+def main(cases_fname, nof_nodes, preempt = True):
     """
     This method creates a cluster, and then
     for a given cluster launches pods (one pod per case),
@@ -194,6 +194,9 @@ def main(cases_fname, nof_nodes):
 
     nof_nodes: integer
         number of the nodes in the cluster
+
+    preempt: boolean
+        If True make preemptable cluster
     """
 
     cfg = read_config("config_cluster.json")
@@ -217,7 +220,7 @@ def main(cases_fname, nof_nodes):
 
     print("Making cluster with nodes: {0}".format(nof_nodes))
 
-    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30)
+    rc = make_cluster(CID, mtype, nof_nodes, ZID, disk_size=30, preempt = preempt)
     if rc != 0:
         print("Cannot make cluster")
         sys.exit(1)
@@ -249,7 +252,7 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: startCluster list_of_pods <# of nodes>")
+        print("Use: startCluster list_of_pods <# of nodes> <any value to make cluster preemptable>")
         print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         sys.exit(1)
 
@@ -261,10 +264,14 @@ if __name__ =='__main__':
     if nof_args > 2:
         nof_nodes = int(sys.argv[2])
 
+    preempt = False
+    if nof_args > 3:
+        preempt = True
+
     if nof_nodes < 1:
         print("Negative number of nodes")
         sys.exit(1)
 
-    rc = main(cases_fname, nof_nodes)
+    rc = main(cases_fname, nof_nodes, preempt)
 
     sys.exit(rc)
