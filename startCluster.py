@@ -252,7 +252,7 @@ if __name__ =='__main__':
     nof_args = len(sys.argv)
 
     if nof_args == 1:
-        print("Use: startCluster list_of_pods <# of nodes> <any value to make cluster preemptable>")
+        print("Use: startCluster list_of_pods <# of nodes> <any value to make non-preemptable cluster>")
         print("Default machine is usually n1-highcpu-2 with 2CPUs, see config_cluster.json")
         sys.exit(1)
 
@@ -264,9 +264,9 @@ if __name__ =='__main__':
     if nof_args > 2:
         nof_nodes = int(sys.argv[2])
 
-    preempt = False
+    preempt = True
     if nof_args > 3:
-        preempt = True
+        preempt = False
 
     if nof_nodes < 1:
         print("Negative number of nodes")
